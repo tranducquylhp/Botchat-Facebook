@@ -124,7 +124,7 @@ public class WebhookRestController {
         final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                 of(notificationType), empty());
 
-        logger.info("abc3");
+        logger.info(messagePayload.toString());
         this.messenger.send(messagePayload);
         logger.info("abc4");
         //sendTextMessage(senderId, "Hello");
