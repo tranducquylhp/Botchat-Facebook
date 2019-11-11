@@ -128,75 +128,75 @@ public class WebhookRestController {
         final Instant timestamp = event.timestamp();
 
         logger.info("Received message '{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-
-        try {
-            switch (messageText.toLowerCase()) {
-                case "user":
-                    sendUserDetails(senderId);
-                    break;
-
-                case "image":
-                    sendImageMessage(senderId);
-                    break;
-
-                case "gif":
-                    sendGifMessage(senderId);
-                    break;
-
-                case "audio":
-                    sendAudioMessage(senderId);
-                    break;
-
-                case "video":
-                    sendVideoMessage(senderId);
-                    break;
-
-                case "file":
-                    sendFileMessage(senderId);
-                    break;
-
-                case "button":
-                    sendButtonMessage(senderId);
-                    break;
-
-                case "generic":
-                    sendGenericMessage(senderId);
-                    break;
-
-                case "list":
-                    sendListMessageMessage(senderId);
-                    break;
-
-                case "receipt":
-                    sendReceiptMessage(senderId);
-                    break;
-
-                case "quick reply":
-                    sendQuickReply(senderId);
-                    break;
-
-                case "read receipt":
-                    sendReadReceipt(senderId);
-                    break;
-
-                case "typing on":
-                    sendTypingOn(senderId);
-                    break;
-
-                case "typing off":
-                    sendTypingOff(senderId);
-                    break;
-
-                case "account linking":
-                    sendAccountLinking(senderId);
-                    break;
-
-                default:
-                    sendTextMessage(senderId, messageText);
-            }
-        } catch (MessengerApiException | MessengerIOException | MalformedURLException e) {
-            handleSendException(e);
-        }
+        sendTextMessage(senderId, "Hello");
+//        try {
+//            switch (messageText.toLowerCase()) {
+//                case "user":
+//                    sendUserDetails(senderId);
+//                    break;
+//
+//                case "image":
+//                    sendImageMessage(senderId);
+//                    break;
+//
+//                case "gif":
+//                    sendGifMessage(senderId);
+//                    break;
+//
+//                case "audio":
+//                    sendAudioMessage(senderId);
+//                    break;
+//
+//                case "video":
+//                    sendVideoMessage(senderId);
+//                    break;
+//
+//                case "file":
+//                    sendFileMessage(senderId);
+//                    break;
+//
+//                case "button":
+//                    sendButtonMessage(senderId);
+//                    break;
+//
+//                case "generic":
+//                    sendGenericMessage(senderId);
+//                    break;
+//
+//                case "list":
+//                    sendListMessageMessage(senderId);
+//                    break;
+//
+//                case "receipt":
+//                    sendReceiptMessage(senderId);
+//                    break;
+//
+//                case "quick reply":
+//                    sendQuickReply(senderId);
+//                    break;
+//
+//                case "read receipt":
+//                    sendReadReceipt(senderId);
+//                    break;
+//
+//                case "typing on":
+//                    sendTypingOn(senderId);
+//                    break;
+//
+//                case "typing off":
+//                    sendTypingOff(senderId);
+//                    break;
+//
+//                case "account linking":
+//                    sendAccountLinking(senderId);
+//                    break;
+//
+//                default:
+//                    sendTextMessage(senderId, messageText);
+//            }
+//        } catch (MessengerApiException | MessengerIOException | MalformedURLException e) {
+//            handleSendException(e);
+//        }
     }
 
     private void sendUserDetails(String recipientId) throws MessengerApiException, MessengerIOException {
