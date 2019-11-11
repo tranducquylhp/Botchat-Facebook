@@ -69,8 +69,8 @@ public class WebhookRestController {
     }
 
     @GetMapping("/webhook")
-    public ResponseEntity<String> verifyWebhook(@RequestParam(MODE_REQUEST_PARAM_NAME) final String mode,
-                                                @RequestParam(VERIFY_TOKEN_REQUEST_PARAM_NAME) final String verifyToken, @RequestParam(CHALLENGE_REQUEST_PARAM_NAME) final String challenge) {
+    public ResponseEntity<String> verifyWebhook(@RequestParam("hub.mode") final String mode,
+                                                @RequestParam("hub.verify_token") final String verifyToken, @RequestParam("hub.challenge") final String challenge) {
         logger.debug("Received Webhook verification request - mode: {} | verifyToken: {} | challenge: {}", mode, verifyToken, challenge);
         try {
             this.messenger.verifyWebhook(mode, verifyToken);
