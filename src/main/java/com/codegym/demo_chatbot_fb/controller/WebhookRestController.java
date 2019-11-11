@@ -68,8 +68,6 @@ public class WebhookRestController {
         this.messenger = messenger;
     }
 
-
-
     @GetMapping("/webhook")
     public ResponseEntity<String> verifyWebhook(@RequestParam(MODE_REQUEST_PARAM_NAME) final String mode,
                                                 @RequestParam(VERIFY_TOKEN_REQUEST_PARAM_NAME) final String verifyToken, @RequestParam(CHALLENGE_REQUEST_PARAM_NAME) final String challenge) {
@@ -84,32 +82,11 @@ public class WebhookRestController {
     }
 
     @PostMapping("/webhook")
-
     public ResponseEntity<Void> handleCallback(@RequestBody final String payload, @RequestHeader(SIGNATURE_HEADER_NAME) final String signature) {
         logger.debug("Received Messenger Platform callback - payload: {} | signature: {}", payload, signature);
         try {
             this.messenger.onReceiveEvents(payload, of(signature), event -> {
-                if (event.isTextMessageEvent()) {
-                    handleTextMessageEvent(event.asTextMessageEvent());
-                } else if (event.isAttachmentMessageEvent()) {
-                    handleAttachmentMessageEvent(event.asAttachmentMessageEvent());
-                } else if (event.isQuickReplyMessageEvent()) {
-                    handleQuickReplyMessageEvent(event.asQuickReplyMessageEvent());
-                } else if (event.isPostbackEvent()) {
-                    handlePostbackEvent(event.asPostbackEvent());
-                } else if (event.isAccountLinkingEvent()) {
-                    handleAccountLinkingEvent(event.asAccountLinkingEvent());
-                } else if (event.isOptInEvent()) {
-                    handleOptInEvent(event.asOptInEvent());
-                } else if (event.isMessageEchoEvent()) {
-                    handleMessageEchoEvent(event.asMessageEchoEvent());
-                } else if (event.isMessageDeliveredEvent()) {
-                    handleMessageDeliveredEvent(event.asMessageDeliveredEvent());
-                } else if (event.isMessageReadEvent()) {
-                    handleMessageReadEvent(event.asMessageReadEvent());
-                } else {
-                    handleFallbackEvent(event);
-                }
+                handleTextMessageEvent(event.asTextMessageEvent());
             });
             logger.debug("Processed callback payload successfully");
             return ResponseEntity.status(HttpStatus.OK).build();
