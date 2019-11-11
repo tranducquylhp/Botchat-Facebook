@@ -84,18 +84,13 @@ public class WebhookRestController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<Void> handleCallback(@RequestBody final String payload, @RequestHeader(SIGNATURE_HEADER_NAME) final String signature) {
+    public ResponseEntity<Void> handleCallback(@RequestBody final String payload, @RequestHeader(SIGNATURE_HEADER_NAME) final String signature) throws MessengerVerificationException {
         logger.debug("Received Messenger Platform callback - payload: {} | signature: {}", payload, signature);
-        try {
-            this.messenger.onReceiveEvents(payload, of(signature), event -> {
-                handleTextMessageEvent(event.asTextMessageEvent());
-            });
-            logger.debug("Processed callback payload successfully");
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (MessengerVerificationException e) {
-            logger.warn("Processing of callback payload failed: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        this.messenger.onReceiveEvents(payload, of(signature), event -> {
+            handleTextMessageEvent(event.asTextMessageEvent());
+        });
+        logger.debug("Processed callback payload successfully");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private void handleTextMessageEvent(TextMessageEvent event) {
