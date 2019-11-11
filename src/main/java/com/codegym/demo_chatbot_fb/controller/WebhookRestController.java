@@ -116,11 +116,17 @@ public class WebhookRestController {
         final NotificationType notificationType = NotificationType.REGULAR;
         final String metadata = "DEVELOPER_DEFINED_METADATA";
 
+        logger.info("abc1");
+
         final TextMessage textMessage = TextMessage.create("Hello", empty(), of(metadata));
+
+        logger.info("abc2");
         final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                 of(notificationType), empty());
+
+        logger.info("abc3");
         this.messenger.send(messagePayload);
-        logger.info(messagePayload.toString());
+        logger.info("abc4");
         //sendTextMessage(senderId, "Hello");
     }
 
