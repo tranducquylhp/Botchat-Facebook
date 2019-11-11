@@ -90,18 +90,21 @@ public class WebhookRestController {
         this.messenger.onReceiveEvents(payload, of(signature), event -> {
             try {
                 handleTextMessageEvent(event.asTextMessageEvent());
+                logger.info("1");
             } catch (MessengerApiException e) {
+                logger.info("2");
                 e.printStackTrace();
             } catch (MessengerIOException e) {
+                logger.info("3");
                 e.printStackTrace();
             }
         });
-        logger.debug("Processed callback payload successfully");
+        logger.info("Processed callback payload successfully");
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private void handleTextMessageEvent(TextMessageEvent event) throws MessengerApiException, MessengerIOException {
-        logger.debug("Received TextMessageEvent: {}", event);
+        logger.info("Received TextMessageEvent: {}", event);
 
         final String messageId = event.messageId();
         final String messageText = event.text();
@@ -117,6 +120,7 @@ public class WebhookRestController {
         final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                 of(notificationType), empty());
         this.messenger.send(messagePayload);
+        logger.info(messagePayload.toString());
         //sendTextMessage(senderId, "Hello");
     }
 
