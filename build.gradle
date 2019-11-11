@@ -27,6 +27,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+    compile group: 'com.github.messenger4j', name: 'messenger4j', version: '1.0.0'
 }
 
 test {
