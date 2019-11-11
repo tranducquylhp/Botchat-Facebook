@@ -72,9 +72,10 @@ public class WebhookRestController {
 
         logger.info("Received message '{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
         sendTextMessage(senderId, "Hello");
+        logger.info("done 1");
     }
 
-    @Scheduled(cron = "0 30 11 * * MON-THU")
+    @Scheduled(cron = "0 35 11 * * MON-THU")
     private void sendTextMessage(String recipientId, String text) {
         try {
             final IdRecipient recipient = IdRecipient.create(recipientId);
@@ -85,6 +86,7 @@ public class WebhookRestController {
             final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                     of(notificationType), empty());
             this.messenger.send(messagePayload);
+            logger.info("done");
         } catch (MessengerApiException | MessengerIOException e) {
             handleSendException(e);
         }
