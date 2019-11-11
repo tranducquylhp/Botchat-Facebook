@@ -75,14 +75,14 @@ public class WebhookRestController {
         logger.info("done 1");
     }
 
-    @Scheduled(cron = "0 35 11 * * MON-THU")
+    @Scheduled(cron = "0 40 11 * * MON-THU")
     private void sendTextMessage(String recipientId, String text) {
         try {
-            final IdRecipient recipient = IdRecipient.create(recipientId);
+            final IdRecipient recipient = IdRecipient.create("3838738026152494");
             final NotificationType notificationType = NotificationType.REGULAR;
             final String metadata = "DEVELOPER_DEFINED_METADATA";
 
-            final TextMessage textMessage = TextMessage.create(text, empty(), of(metadata));
+            final TextMessage textMessage = TextMessage.create("Hello", empty(), of(metadata));
             final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                     of(notificationType), empty());
             this.messenger.send(messagePayload);
