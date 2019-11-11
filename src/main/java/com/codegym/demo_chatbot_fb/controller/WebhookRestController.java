@@ -27,15 +27,18 @@ public class WebhookRestController {
 
 
         // Checks the mode and token sent is correct
-        if (mode == "subscribe" && token == VERYFY_TOKEN) {
+        if (mode != null && token != null) {
+            if (mode == "subscribe" && token == VERYFY_TOKEN) {
 
-            // Responds with the challenge token from the request
-            return new ResponseEntity<String>(challenge, HttpStatus.OK);
+                // Responds with the challenge token from the request
+                return new ResponseEntity<String>(challenge, HttpStatus.OK);
 
-        } else {
-            // Responds with '403 Forbidden' if verify tokens do not match
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                // Responds with '403 Forbidden' if verify tokens do not match
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/webhook")
