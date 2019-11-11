@@ -69,16 +69,18 @@ public class WebhookRestController {
     }
 
     @GetMapping("/webhook")
-    public ResponseEntity<String> verifyWebhook(@RequestParam("hub.mode") final String mode,
-                                                @RequestParam("hub.verify_token") final String verifyToken, @RequestParam("hub.challenge") final String challenge) {
-        logger.debug("Received Webhook verification request - mode: {} | verifyToken: {} | challenge: {}", mode, verifyToken, challenge);
-        try {
-            this.messenger.verifyWebhook(mode, verifyToken);
-            return ResponseEntity.ok(challenge);
-        } catch (MessengerVerificationException e) {
-            logger.warn("Webhook verification failed: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+    public ResponseEntity<String> verifyWebhook(/*@RequestParam("hub.mode") final String mode,
+                                                @RequestParam("hub.verify_token") final String verifyToken, */
+                                                @RequestParam("hub.challenge") final String challenge) {
+        return ResponseEntity.ok(challenge);
+//        logger.debug("Received Webhook verification request - mode: {} | verifyToken: {} | challenge: {}", mode, verifyToken, challenge);
+//        try {
+//            this.messenger.verifyWebhook(mode, verifyToken);
+//            return ResponseEntity.ok(challenge);
+//        } catch (MessengerVerificationException e) {
+//            logger.warn("Webhook verification failed: {}", e.getMessage());
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+//        }
     }
 
     @PostMapping("/webhook")
