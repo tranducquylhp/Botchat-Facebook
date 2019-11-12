@@ -105,7 +105,7 @@ public class WebhookRestController {
         if (this.count == this.users.size()) {
             this.users.add(new User(senderId, true));
             this.count = 0;
-        } else {
+        } else  if (!messageText.toLowerCase().equals("stop")){
             this.idSender = senderId;
             sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
             logger.info("done 1");
