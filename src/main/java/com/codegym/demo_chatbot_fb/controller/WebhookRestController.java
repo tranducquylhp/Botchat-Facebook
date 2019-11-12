@@ -27,7 +27,7 @@ import static java.util.Optional.of;
 
 @RestController
 public class WebhookRestController {
-    private ArrayList<User> users;
+    private ArrayList<User> users = new ArrayList<>();
     private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
@@ -78,6 +78,7 @@ public class WebhookRestController {
         for (User user: this.users) {
             if (user.getId().equals(senderId)){
                 if (messageText.toLowerCase().equals("stop")) user.setStatus(false);
+                count = 0;
                 break;
             } else {
                 count++;
