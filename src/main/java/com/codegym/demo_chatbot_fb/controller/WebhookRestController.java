@@ -1,5 +1,6 @@
 package com.codegym.demo_chatbot_fb.controller;
 
+import com.codegym.demo_chatbot_fb.model.User;
 import com.github.messenger4j.Messenger;
 import com.github.messenger4j.exception.MessengerApiException;
 import com.github.messenger4j.exception.MessengerIOException;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
+import java.util.ArrayList;
 
 import static com.github.messenger4j.Messenger.*;
 import static java.util.Optional.empty;
@@ -25,7 +27,7 @@ import static java.util.Optional.of;
 
 @RestController
 public class WebhookRestController {
-    private String idSender;
+    private ArrayList<User> users;
     private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
@@ -72,24 +74,37 @@ public class WebhookRestController {
         final Instant timestamp = event.timestamp();
 
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        this.idSender = senderId;
+        int count =0;
+        for (User user: this.users) {
+            if (user.getId().equals(senderId)){
+                if (messageText.toLowerCase().equals("stop")) user.setStatus(false);
+                break;
+            } else {
+                count++;
+            }
+        }
+        if (count==this.users.size()) this.users.add(new User(senderId, true));
         sendTextMessage();
         logger.info("done 1");
     }
-    @Scheduled(cron = "0 45 9 * * MON-THU", zone = "Asia/Saigon")
+    @Scheduled(cron = "0 0/15 * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
-        try {
-            final IdRecipient recipient = IdRecipient.create(this.idSender);
-            final NotificationType notificationType = NotificationType.REGULAR;
-            final String metadata = "DEVELOPER_DEFINED_METADATA";
+        for (User user:this.users) {
+            if (user.isStatus()){
+                try {
+                    final IdRecipient recipient = IdRecipient.create(user.getId());
+                    final NotificationType notificationType = NotificationType.REGULAR;
+                    final String metadata = "DEVELOPER_DEFINED_METADATA";
 
-            final TextMessage textMessage = TextMessage.create("Hello", empty(), of(metadata));
-            final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
-                    of(notificationType), empty());
-            this.messenger.send(messagePayload);
-            logger.info("done");
-        } catch (MessengerApiException | MessengerIOException e) {
-            handleSendException(e);
+                    final TextMessage textMessage = TextMessage.create("Hello. Enter \"stop\" to stop send message", empty(), of(metadata));
+                    final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
+                            of(notificationType), empty());
+                    this.messenger.send(messagePayload);
+                    logger.info("done");
+                } catch (MessengerApiException | MessengerIOException e) {
+                    handleSendException(e);
+                }
+            }
         }
     }
 
