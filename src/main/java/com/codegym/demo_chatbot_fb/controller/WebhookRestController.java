@@ -25,6 +25,7 @@ import static java.util.Optional.of;
 
 @RestController
 public class WebhookRestController {
+    private String idSender;
     private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
@@ -70,18 +71,19 @@ public class WebhookRestController {
         final String senderId = event.senderId();
         final Instant timestamp = event.timestamp();
 
-        logger.info("Received message '{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        sendTextMessage(senderId, "Hello");
+        logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
+        this.idSender = senderId;
+        sendTextMessage();
         logger.info("done 1");
     }
-
-    private void sendTextMessage(String recipientId, String text) {
+    @Scheduled(cron = "0 40 9 * * MON-THU")
+    private void sendTextMessage() {
         try {
-            final IdRecipient recipient = IdRecipient.create(recipientId);
+            final IdRecipient recipient = IdRecipient.create(this.idSender);
             final NotificationType notificationType = NotificationType.REGULAR;
             final String metadata = "DEVELOPER_DEFINED_METADATA";
 
-            final TextMessage textMessage = TextMessage.create(text, empty(), of(metadata));
+            final TextMessage textMessage = TextMessage.create("Hello", empty(), of(metadata));
             final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                     of(notificationType), empty());
             this.messenger.send(messagePayload);
