@@ -78,7 +78,10 @@ public class WebhookRestController {
         for (int i=0; i<this.users.size(); i++) {
             User user = this.users.get(i);
             if (user.getId().equals(senderId)){
-                if (messageText.toLowerCase().equals("stop")) user.setStatus(false);
+                if (messageText.toLowerCase().equals("stop")) {
+                    user.setStatus(false);
+                }
+                logger.info("check 1");
                 count = 0;
                 break;
             } else {
