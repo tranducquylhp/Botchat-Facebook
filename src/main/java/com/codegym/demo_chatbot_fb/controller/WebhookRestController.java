@@ -90,7 +90,8 @@ public class WebhookRestController {
     }
     @Scheduled(cron = "0 /5 * * * MON-SUN", zone = "Asia/Saigon")
     private void sendTextMessage() {
-        for (User user:this.users) {
+        for (int i=0; i<this.users.size(); i++) {
+            User user = this.users.get(i);
             if (user.isStatus()){
                 try {
                     final IdRecipient recipient = IdRecipient.create(user.getId());
