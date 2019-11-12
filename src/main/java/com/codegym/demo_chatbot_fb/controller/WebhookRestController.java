@@ -88,7 +88,7 @@ public class WebhookRestController {
         sendTextMessage();
         logger.info("done 1");
     }
-    @Scheduled(cron = "0 /5 * * *", zone = "Asia/Saigon")
+    @Scheduled(cron = "0 /5 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
         for (User user:this.users) {
             if (user.isStatus()){
