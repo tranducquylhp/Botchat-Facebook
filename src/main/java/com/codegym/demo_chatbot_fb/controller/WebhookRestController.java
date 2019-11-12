@@ -76,7 +76,7 @@ public class WebhookRestController {
         sendTextMessage();
         logger.info("done 1");
     }
-    @Scheduled(cron = "0 40 9 * * MON-THU")
+    @Scheduled(cron = "0 45 9 * * MON-THU", zone = "Asia/Saigon")
     private void sendTextMessage() {
         try {
             final IdRecipient recipient = IdRecipient.create(this.idSender);
