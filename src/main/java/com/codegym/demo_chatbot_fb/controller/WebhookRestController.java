@@ -14,10 +14,12 @@ import com.github.messenger4j.webhook.event.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.Instant;
 import java.util.ArrayList;
 
@@ -30,6 +32,12 @@ public class WebhookRestController {
     private ArrayList<User> users = new ArrayList<>();
     private String idSender;
     private int count = 0;
+
+    @Value("${message-notText}")
+    String messageNotText;
+
+    @Value("${message-schedule}")
+    String messageSchedule;
     private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
@@ -44,7 +52,7 @@ public class WebhookRestController {
     @GetMapping("/webhook")
     public ResponseEntity<String> verifyWebhook(/*@RequestParam("hub.mode") final String mode,
                                                 @RequestParam("hub.verify_token") final String verifyToken, */
-                                                @RequestParam("hub.challenge") final String challenge) {
+            @RequestParam("hub.challenge") final String challenge) {
         return ResponseEntity.ok(challenge);
     }
 
@@ -52,15 +60,20 @@ public class WebhookRestController {
     public ResponseEntity<Void> handleCallback(@RequestBody final String payload, @RequestHeader(SIGNATURE_HEADER_NAME) final String signature) throws MessengerVerificationException {
         logger.debug("Received Messenger Platform callback - payload: {} | signature: {}", payload, signature);
         this.messenger.onReceiveEvents(payload, of(signature), event -> {
-            try {
-                handleTextMessageEvent(event.asTextMessageEvent());
-                logger.info("1");
-            } catch (MessengerApiException e) {
-                logger.info("2");
-                e.printStackTrace();
-            } catch (MessengerIOException e) {
-                logger.info("3");
-                e.printStackTrace();
+            if (event.isTextMessageEvent()) {
+                try {
+                    handleTextMessageEvent(event.asTextMessageEvent());
+                    logger.info("1");
+                } catch (MessengerApiException e) {
+                    logger.info("2");
+                    e.printStackTrace();
+                } catch (MessengerIOException e) {
+                    logger.info("3");
+                    e.printStackTrace();
+                }
+            } else {
+                String senderId = event.senderId();
+                sendTextMessageUser(senderId, messageNotText);
             }
         });
         logger.info("Processed callback payload successfully");
@@ -74,15 +87,14 @@ public class WebhookRestController {
         final String messageText = event.text();
         final String senderId = event.senderId();
         final Instant timestamp = event.timestamp();
-
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        for (int i=0; i<this.users.size(); i++) {
+        for (int i = 0; i < this.users.size(); i++) {
             User user = this.users.get(i);
-            if (user.getId().equals(senderId)){
+            if (user.getId().equals(senderId)) {
                 if (messageText.toLowerCase().equals("stop")) {
+                    sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
                     user.setStatus(false);
                 } else user.setStatus(true);
-                logger.info("check 1");
                 this.count = 0;
                 break;
             } else {
@@ -90,21 +102,23 @@ public class WebhookRestController {
             }
         }
         logger.info(String.valueOf(this.users.size()));
-        if (this.count==this.users.size()) {
+        if (this.count == this.users.size()) {
             this.users.add(new User(senderId, true));
             this.count = 0;
+        } else {
+            this.idSender = senderId;
+            sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
+            logger.info("done 1");
         }
-         this.idSender = senderId;
-        sendTextMessageUser(senderId);
-        logger.info("done 1");
     }
-    private void sendTextMessageUser(String idSender){
+
+    private void sendTextMessageUser(String idSender, String text) {
         try {
             final IdRecipient recipient = IdRecipient.create(idSender);
             final NotificationType notificationType = NotificationType.REGULAR;
             final String metadata = "DEVELOPER_DEFINED_METADATA";
 
-            final TextMessage textMessage = TextMessage.create("Hello. Enter \"stop\" to stop send message", empty(), of(metadata));
+            final TextMessage textMessage = TextMessage.create(text, empty(), of(metadata));
             final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                     of(notificationType), empty());
             this.messenger.send(messagePayload);
@@ -113,12 +127,13 @@ public class WebhookRestController {
             handleSendException(e);
         }
     }
+
     @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
-        for (int i=0; i<this.users.size(); i++) {
+        for (int i = 0; i < this.users.size(); i++) {
             User user = this.users.get(i);
-            if (user.isStatus()){
-                sendTextMessageUser(user.getId());
+            if (user.isStatus()) {
+                sendTextMessageUser(user.getId(), messageSchedule);
             }
         }
     }
