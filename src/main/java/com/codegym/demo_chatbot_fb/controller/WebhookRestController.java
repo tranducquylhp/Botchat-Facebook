@@ -75,7 +75,8 @@ public class WebhookRestController {
 
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
         int count =0;
-        for (User user: this.users) {
+        for (int i=0; i<this.users.size(); i++) {
+            User user = this.users.get(i);
             if (user.getId().equals(senderId)){
                 if (messageText.toLowerCase().equals("stop")) user.setStatus(false);
                 count = 0;
@@ -85,6 +86,7 @@ public class WebhookRestController {
             }
         }
         if (count==this.users.size()) this.users.add(new User(senderId, true));
+
         sendTextMessage();
         logger.info("done 1");
     }
