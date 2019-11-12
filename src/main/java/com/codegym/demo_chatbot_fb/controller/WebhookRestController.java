@@ -28,6 +28,7 @@ import static java.util.Optional.of;
 @RestController
 public class WebhookRestController {
     private ArrayList<User> users = new ArrayList<>();
+    private String idSender;
     private int count = 0;
     private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
@@ -93,28 +94,31 @@ public class WebhookRestController {
             this.users.add(new User(senderId, true));
             this.count = 0;
         }
-
-        sendTextMessage();
+         this.idSender = senderId;
+        sendTextMessageUser(senderId);
         logger.info("done 1");
+    }
+    private void sendTextMessageUser(String idSender){
+        try {
+            final IdRecipient recipient = IdRecipient.create(idSender);
+            final NotificationType notificationType = NotificationType.REGULAR;
+            final String metadata = "DEVELOPER_DEFINED_METADATA";
+
+            final TextMessage textMessage = TextMessage.create("Hello. Enter \"stop\" to stop send message", empty(), of(metadata));
+            final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
+                    of(notificationType), empty());
+            this.messenger.send(messagePayload);
+            logger.info("done");
+        } catch (MessengerApiException | MessengerIOException e) {
+            handleSendException(e);
+        }
     }
     @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
         for (int i=0; i<this.users.size(); i++) {
             User user = this.users.get(i);
             if (user.isStatus()){
-                try {
-                    final IdRecipient recipient = IdRecipient.create(user.getId());
-                    final NotificationType notificationType = NotificationType.REGULAR;
-                    final String metadata = "DEVELOPER_DEFINED_METADATA";
-
-                    final TextMessage textMessage = TextMessage.create("Hello. Enter \"stop\" to stop send message", empty(), of(metadata));
-                    final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
-                            of(notificationType), empty());
-                    this.messenger.send(messagePayload);
-                    logger.info("done");
-                } catch (MessengerApiException | MessengerIOException e) {
-                    handleSendException(e);
-                }
+                sendTextMessageUser(user.getId());
             }
         }
     }
