@@ -85,6 +85,7 @@ public class WebhookRestController {
                 count++;
             }
         }
+        logger.info(this.users.toString());
         if (count==this.users.size()) this.users.add(new User(senderId, true));
 
         sendTextMessage();
