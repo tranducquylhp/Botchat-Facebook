@@ -28,6 +28,7 @@ import static java.util.Optional.of;
 @RestController
 public class WebhookRestController {
     private ArrayList<User> users = new ArrayList<>();
+    private int count = 0;
     private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
@@ -74,7 +75,6 @@ public class WebhookRestController {
         final Instant timestamp = event.timestamp();
 
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        int count =0;
         for (int i=0; i<this.users.size(); i++) {
             User user = this.users.get(i);
             if (user.getId().equals(senderId)){
@@ -82,14 +82,17 @@ public class WebhookRestController {
                     user.setStatus(false);
                 }
                 logger.info("check 1");
-                count = 0;
+                this.count = 0;
                 break;
             } else {
-                count++;
+                this.count++;
             }
         }
         logger.info(this.users.toString());
-        if (count==this.users.size()) this.users.add(new User(senderId, true));
+        if (this.count==this.users.size()) {
+            this.users.add(new User(senderId, true));
+            this.count = 0;
+        }
 
         sendTextMessage();
         logger.info("done 1");
