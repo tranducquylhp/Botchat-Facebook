@@ -80,7 +80,7 @@ public class WebhookRestController {
             if (user.getId().equals(senderId)){
                 if (messageText.toLowerCase().equals("stop")) {
                     user.setStatus(false);
-                }
+                } else user.setStatus(true);
                 logger.info("check 1");
                 this.count = 0;
                 break;
