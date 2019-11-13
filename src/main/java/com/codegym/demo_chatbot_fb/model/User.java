@@ -3,7 +3,7 @@ package com.codegym.demo_chatbot_fb.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "userFacebook")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
