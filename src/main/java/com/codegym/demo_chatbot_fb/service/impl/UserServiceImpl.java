@@ -44,28 +44,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Iterable<User> findAllByStatusIsTrue() {
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<User> userList = (ArrayList<User>) findAll();
-        for (int i=0; i<userList.size(); i++){
-            User user = userList.get(i);
-            if (user.isStatus()){
-                users.add(user);
-            }
-        }
-        return users;
+//        ArrayList<User> users = new ArrayList<>();
+//        ArrayList<User> userList = (ArrayList<User>) findAll();
+//        for (int i=0; i<userList.size(); i++){
+//            User user = userList.get(i);
+//            if (user.isStatus()){
+//                users.add(user);
+//            }
+//        }
+        return userRepository.findAllByStatusIsTrue();
     }
 
     @Override
     public Iterable<User> findAllByStatusIsFalse() {
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<User> userList = (ArrayList<User>) findAll();
-        for (int i=0; i<userList.size(); i++){
-            User user = userList.get(i);
-            if (!user.isStatus()){
-                users.add(user);
-            }
-        }
-        return users;
+//        ArrayList<User> users = new ArrayList<>();
+//        ArrayList<User> userList = (ArrayList<User>) findAll();
+//        for (int i=0; i<userList.size(); i++){
+//            User user = userList.get(i);
+//            if (!user.isStatus()){
+//                users.add(user);
+//            }
+//        }
+        return userRepository.findAllByStatusIsFalse();
     }
 
 
