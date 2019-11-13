@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Table(name = "userFacebook")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
     private String id;
 
     private boolean status = false;
