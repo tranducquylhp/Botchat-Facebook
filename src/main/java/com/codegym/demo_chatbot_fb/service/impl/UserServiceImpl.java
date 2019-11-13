@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -41,12 +43,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Iterable<User> findAllByStatusIsTrue() {
-        return userRepository.findAllByStatusIsTrue();
+        ArrayList<User> users = new ArrayList<>();
+        ArrayList<User> userList = (ArrayList<User>) findAll();
+        for (int i=0; i<userList.size(); i++){
+            User user = userList.get(i);
+            if (user.isStatus()){
+                users.add(user);
+            }
+        }
+        return users;
     }
 
     @Override
     public Iterable<User> findAllByStatusIsFalse() {
-        return userRepository.findAllByStatusIsFalse();
+        ArrayList<User> users = new ArrayList<>();
+        ArrayList<User> userList = (ArrayList<User>) findAll();
+        for (int i=0; i<userList.size(); i++){
+            User user = userList.get(i);
+            if (!user.isStatus()){
+                users.add(user);
+            }
+        }
+        return users;
     }
 
 

@@ -50,7 +50,7 @@ public class UserController {
     @GetMapping("/users/statusFalse")
     public ModelAndView listUsersFalse(){
         ModelAndView modelAndView = new ModelAndView("user/listFalse");
-        Iterable<User> users = userService.findAllByStatusIsTrue();
+        Iterable<User> users = userService.findAllByStatusIsFalse();
         modelAndView.addObject("users",users);
         return modelAndView;
     }

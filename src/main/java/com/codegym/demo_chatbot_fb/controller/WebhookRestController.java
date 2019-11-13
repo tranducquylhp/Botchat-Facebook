@@ -59,6 +59,7 @@ public class WebhookRestController {
         this.messenger.onReceiveEvents(payload, of(signature), event -> {
             if (event.isTextMessageEvent()) {
                 try {
+                    logger.info("0");
                     handleTextMessageEvent(event.asTextMessageEvent());
                     logger.info("1");
                 } catch (MessengerApiException e) {

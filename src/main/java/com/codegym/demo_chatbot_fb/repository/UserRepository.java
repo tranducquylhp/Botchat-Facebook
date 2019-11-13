@@ -8,9 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-    @Query("SELECT u FROM User u where u.status = true")
-    Iterable<User> findAllByStatusIsTrue();
-
-    @Query("SELECT u FROM User u where u.status = false ")
-    Iterable<User> findAllByStatusIsFalse();
 }
