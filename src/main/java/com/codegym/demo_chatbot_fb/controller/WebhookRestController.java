@@ -85,7 +85,6 @@ public class WebhookRestController {
         final String senderId = event.senderId();
         final Instant timestamp = event.timestamp();
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        Iterable<User> users = userService.findAll();
         User user = userService.findById(senderId);
         if (user != null){
             if (messageText.toLowerCase().equals("stop")) {
