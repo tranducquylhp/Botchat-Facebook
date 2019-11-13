@@ -89,7 +89,7 @@ public class WebhookRestController {
         final Instant timestamp = event.timestamp();
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
         logger.info("user");
-        if (!userService.findById(senderId).isPresent()){
+        if (userService.findById(senderId).isPresent()){
             Optional<User> user = userService.findById(senderId);
             if (messageText.toLowerCase().equals("stop")) {
                 sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
