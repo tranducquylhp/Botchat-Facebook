@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 @Controller
 public class UserController {
     @Autowired
@@ -27,7 +29,7 @@ public class UserController {
     @GetMapping("/user/delete/{id}")
     public ModelAndView deleteUserForm(@PathVariable String id){
         ModelAndView modelAndView = new ModelAndView("user/delete");
-        User user = userService.findById(id);
+        Optional<User> user = userService.findById(id);
         modelAndView.addObject("user",user);
         return modelAndView;
     }

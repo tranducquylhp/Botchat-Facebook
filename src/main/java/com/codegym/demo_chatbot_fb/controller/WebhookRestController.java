@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static com.github.messenger4j.Messenger.*;
 import static java.util.Optional.empty;
@@ -88,13 +89,13 @@ public class WebhookRestController {
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
         logger.info("user");
         if (userService.findById(senderId) != null){
-            User user = userService.findById(senderId);
+            Optional<User> user = userService.findById(senderId);
             if (messageText.toLowerCase().equals("stop")) {
                 sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
-                user.setStatus(false);
+                user.get().setStatus(false);
                 logger.info("abc");
             } else {
-                user.setStatus(true);
+                user.get().setStatus(true);
                 sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
                 logger.info("abcd");
             }

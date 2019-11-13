@@ -12,7 +12,7 @@ public interface UserService {
     void save(User user);
     void delete(String id);
 
-    User findById(String id);
+    Optional<User> findById(String id);
 
     Iterable<User> findAllByStatusIsTrue();
 

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,13 +33,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String id) {
-        User user = findById(id);
-        userRepository.delete(user);
+        Optional<User> user = findById(id);
+        userRepository.delete(user.get());
     }
 
     @Override
-    public User findById(String id) {
-        return userRepository.findById(id).get();
+    public Optional<User> findById(String id) {
+        return userRepository.findById(id);
     }
 
     @Override
