@@ -99,9 +99,10 @@ public class WebhookRestController {
                 logger.info("abcd");
             }
         } else {
+            logger.info("save user");
             User user = new User(messageId,true);
             userService.save(user);
-            logger.info("abcde");
+            logger.info("saved");
             sendTextMessageUser(senderId, "Welcome! You have started receiving scheduled messages");
         }
 //        for (int i = 0; i < this.users.size(); i++) {
