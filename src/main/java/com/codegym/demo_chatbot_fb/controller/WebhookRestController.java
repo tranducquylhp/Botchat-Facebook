@@ -1,7 +1,6 @@
 package com.codegym.demo_chatbot_fb.controller;
 
 import static com.github.messenger4j.Messenger.SIGNATURE_HEADER_NAME;
-import static com.github.messenger4j.Messenger.*;
 import com.codegym.demo_chatbot_fb.model.User;
 import com.codegym.demo_chatbot_fb.service.UserService;
 import com.github.messenger4j.Messenger;
@@ -94,13 +93,13 @@ public class WebhookRestController {
             if (messageText.toLowerCase().equals("stop")) {
                 sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
                 user.get().setStatus(false);
-                userService.save(user.get());
                 logger.info("abc");
             } else {
                 user.get().setStatus(true);
                 sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
                 logger.info("abcd");
             }
+            userService.save(user.get());
         } else {
             logger.info("save user");
             User user = new User(senderId,true);
@@ -108,28 +107,6 @@ public class WebhookRestController {
             logger.info("saved");
             sendTextMessageUser(senderId, "Welcome! You have started receiving scheduled messages");
         }
-//        for (int i = 0; i < this.users.size(); i++) {
-//            User user = this.users.get(i);
-//            if (user.getId().equals(senderId)) {
-//                if (messageText.toLowerCase().equals("stop")) {
-//                    sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
-//                    user.setStatus(false);
-//                } else user.setStatus(true);
-//                this.count = 0;
-//                break;
-//            } else {
-//                this.count++;
-//            }
-//        }
-//        logger.info(String.valueOf(this.users.size()));
-//        if (this.count == this.users.size()) {
-//            this.users.add(new User(senderId, true));
-//            this.count = 0;
-//        } else  if (!messageText.toLowerCase().equals("stop")){
-//            this.idSender = senderId;
-//            sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
-//            logger.info("done 1");
-//        }
     }
 
     private void sendTextMessageUser(String idSender, String text) {
@@ -156,12 +133,6 @@ public class WebhookRestController {
             sendTextMessageUser(users.get(i).getId(), messageSchedule);
         }
         logger.info("qwerty");
-//        for (int i = 0; i < this.users.size(); i++) {
-//            User user = this.users.get(i);
-//            if (user.isStatus()) {
-//                sendTextMessageUser(user.getId(), messageSchedule);
-//            }
-//        }
     }
 
     private void handleSendException(Exception e) {
