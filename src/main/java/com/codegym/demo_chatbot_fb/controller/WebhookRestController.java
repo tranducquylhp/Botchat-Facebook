@@ -55,7 +55,7 @@ public class WebhookRestController {
 
     @PostMapping("/webhook")
     public ResponseEntity<Void> handleCallback(@RequestBody final String payload, @RequestHeader(SIGNATURE_HEADER_NAME) final String signature) throws MessengerVerificationException {
-        logger.debug("Received Messenger Platform callback - payload: {} | signature: {}", payload, signature);
+        logger.info("Received Messenger Platform callback - payload: {} | signature: {}", payload, signature);
         this.messenger.onReceiveEvents(payload, of(signature), event -> {
             if (event.isTextMessageEvent()) {
                 try {
