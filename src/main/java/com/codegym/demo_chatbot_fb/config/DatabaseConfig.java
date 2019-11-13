@@ -33,7 +33,7 @@ import java.util.Properties;
 @PropertySources({
         @PropertySource("classpath:database.properties"),
         @PropertySource("classpath:hibernate.properties")})
-public class DatabaseConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+public class DatabaseConfig{
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -100,13 +100,5 @@ public class DatabaseConfig extends WebMvcConfigurerAdapter implements Applicati
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-
-    private ApplicationContext applicationContext;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 }
