@@ -1,5 +1,7 @@
 package com.codegym.demo_chatbot_fb.controller;
 
+import static com.github.messenger4j.Messenger.SIGNATURE_HEADER_NAME;
+import static com.github.messenger4j.Messenger.*;
 import com.codegym.demo_chatbot_fb.model.User;
 import com.codegym.demo_chatbot_fb.service.UserService;
 import com.github.messenger4j.Messenger;
@@ -25,7 +27,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static com.github.messenger4j.Messenger.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
