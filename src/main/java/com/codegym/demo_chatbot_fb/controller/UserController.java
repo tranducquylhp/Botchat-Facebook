@@ -30,7 +30,7 @@ public class UserController {
     public ModelAndView deleteUserForm(@PathVariable String id){
         ModelAndView modelAndView = new ModelAndView("user/delete");
         Optional<User> user = userService.findById(id);
-        modelAndView.addObject("user",user);
+        modelAndView.addObject("user",user.get());
         return modelAndView;
     }
 
