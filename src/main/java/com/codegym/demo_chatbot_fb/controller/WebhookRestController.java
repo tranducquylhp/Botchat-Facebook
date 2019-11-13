@@ -94,6 +94,7 @@ public class WebhookRestController {
             if (messageText.toLowerCase().equals("stop")) {
                 sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
                 user.get().setStatus(false);
+                userService.save(user.get());
                 logger.info("abc");
             } else {
                 user.get().setStatus(true);
