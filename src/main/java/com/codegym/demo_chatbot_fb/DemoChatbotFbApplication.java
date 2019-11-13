@@ -4,11 +4,15 @@ import com.github.messenger4j.Messenger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableJpaRepositories("com.codegym.demo_chatbot_fb.repository")
+@EntityScan("com.codegym.demo_chatbot_fb.model")
 public class DemoChatbotFbApplication {
 
     @Bean

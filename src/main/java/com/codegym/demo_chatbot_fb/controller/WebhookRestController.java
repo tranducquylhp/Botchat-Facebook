@@ -1,6 +1,7 @@
 package com.codegym.demo_chatbot_fb.controller;
 
 import com.codegym.demo_chatbot_fb.model.User;
+import com.codegym.demo_chatbot_fb.service.UserService;
 import com.github.messenger4j.Messenger;
 import com.github.messenger4j.exception.MessengerApiException;
 import com.github.messenger4j.exception.MessengerIOException;
@@ -29,16 +30,14 @@ import static java.util.Optional.of;
 
 @RestController
 public class WebhookRestController {
-    private ArrayList<User> users = new ArrayList<>();
-    private String idSender;
-    private int count = 0;
+    @Autowired
+    private UserService userService;
 
     @Value("${message-notText}")
     String messageNotText;
 
     @Value("${message-schedule}")
     String messageSchedule;
-    private static final String RESOURCE_URL = "https://raw.githubusercontent.com/fbsamples/messenger-platform-samples/master/node/public";
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
 
@@ -50,9 +49,7 @@ public class WebhookRestController {
     }
 
     @GetMapping("/webhook")
-    public ResponseEntity<String> verifyWebhook(/*@RequestParam("hub.mode") final String mode,
-                                                @RequestParam("hub.verify_token") final String verifyToken, */
-            @RequestParam("hub.challenge") final String challenge) {
+    public ResponseEntity<String> verifyWebhook(@RequestParam("hub.challenge") final String challenge) {
         return ResponseEntity.ok(challenge);
     }
 
@@ -88,28 +85,43 @@ public class WebhookRestController {
         final String senderId = event.senderId();
         final Instant timestamp = event.timestamp();
         logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        for (int i = 0; i < this.users.size(); i++) {
-            User user = this.users.get(i);
-            if (user.getId().equals(senderId)) {
-                if (messageText.toLowerCase().equals("stop")) {
-                    sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
-                    user.setStatus(false);
-                } else user.setStatus(true);
-                this.count = 0;
-                break;
+        Iterable<User> users = userService.findAll();
+        User user = userService.findById(senderId);
+        if (user != null){
+            if (messageText.toLowerCase().equals("stop")) {
+                sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
+                user.setStatus(false);
             } else {
-                this.count++;
+                user.setStatus(true);
+                sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
             }
+        } else {
+            user.setStatus(true);
+            userService.save(user);
+            sendTextMessageUser(senderId, "Welcome! You have started receiving scheduled messages");
         }
-        logger.info(String.valueOf(this.users.size()));
-        if (this.count == this.users.size()) {
-            this.users.add(new User(senderId, true));
-            this.count = 0;
-        } else  if (!messageText.toLowerCase().equals("stop")){
-            this.idSender = senderId;
-            sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
-            logger.info("done 1");
-        }
+//        for (int i = 0; i < this.users.size(); i++) {
+//            User user = this.users.get(i);
+//            if (user.getId().equals(senderId)) {
+//                if (messageText.toLowerCase().equals("stop")) {
+//                    sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
+//                    user.setStatus(false);
+//                } else user.setStatus(true);
+//                this.count = 0;
+//                break;
+//            } else {
+//                this.count++;
+//            }
+//        }
+//        logger.info(String.valueOf(this.users.size()));
+//        if (this.count == this.users.size()) {
+//            this.users.add(new User(senderId, true));
+//            this.count = 0;
+//        } else  if (!messageText.toLowerCase().equals("stop")){
+//            this.idSender = senderId;
+//            sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
+//            logger.info("done 1");
+//        }
     }
 
     private void sendTextMessageUser(String idSender, String text) {
@@ -130,12 +142,16 @@ public class WebhookRestController {
 
     @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
-        for (int i = 0; i < this.users.size(); i++) {
-            User user = this.users.get(i);
-            if (user.isStatus()) {
-                sendTextMessageUser(user.getId(), messageSchedule);
-            }
+        ArrayList<User> users = (ArrayList<User>) userService.findAllByStatusIsTrue();
+        for (int i=0; i<users.size(); i++){
+            sendTextMessageUser(users.get(i).getId(), messageSchedule);
         }
+//        for (int i = 0; i < this.users.size(); i++) {
+//            User user = this.users.get(i);
+//            if (user.isStatus()) {
+//                sendTextMessageUser(user.getId(), messageSchedule);
+//            }
+//        }
     }
 
     private void handleSendException(Exception e) {
