@@ -91,13 +91,16 @@ public class WebhookRestController {
             if (messageText.toLowerCase().equals("stop")) {
                 sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
                 user.setStatus(false);
+                logger.info("abc");
             } else {
                 user.setStatus(true);
                 sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
+                logger.info("abcd");
             }
         } else {
             user.setStatus(true);
             userService.save(user);
+            logger.info("abcde");
             sendTextMessageUser(senderId, "Welcome! You have started receiving scheduled messages");
         }
 //        for (int i = 0; i < this.users.size(); i++) {
@@ -142,10 +145,12 @@ public class WebhookRestController {
 
     @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
+        logger.info("qwert");
         ArrayList<User> users = (ArrayList<User>) userService.findAllByStatusIsTrue();
         for (int i=0; i<users.size(); i++){
             sendTextMessageUser(users.get(i).getId(), messageSchedule);
         }
+        logger.info("qwerty");
 //        for (int i = 0; i < this.users.size(); i++) {
 //            User user = this.users.get(i);
 //            if (user.isStatus()) {
