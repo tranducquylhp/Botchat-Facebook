@@ -23,6 +23,8 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("user/list");
         Page<User> users = userService.findAll(pageable);
         modelAndView.addObject("users",users);
+        modelAndView.addObject("usersTrue", userService.findAllByStatusIsTrue());
+        modelAndView.addObject("usersFalse", userService.findAllByStatusIsFalse());
         return modelAndView;
     }
 
@@ -40,22 +42,6 @@ public class UserController {
     public ModelAndView deleteUser(@PathVariable String id){
         ModelAndView modelAndView = new ModelAndView("redirect:/users");
         userService.delete(id);
-        return modelAndView;
-    }
-
-    @GetMapping("/users/statusTrue")
-    public ModelAndView listUsersTrue(){
-        ModelAndView modelAndView = new ModelAndView("user/listTrue");
-        Iterable<User> users = userService.findAllByStatusIsTrue();
-        modelAndView.addObject("users",users);
-        return modelAndView;
-    }
-
-    @GetMapping("/users/statusFalse")
-    public ModelAndView listUsersFalse(){
-        ModelAndView modelAndView = new ModelAndView("user/listFalse");
-        Iterable<User> users = userService.findAllByStatusIsFalse();
-        modelAndView.addObject("users",users);
         return modelAndView;
     }
 }
