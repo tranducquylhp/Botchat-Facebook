@@ -139,6 +139,8 @@ public class WebhookRestController {
                 sendTextMessageUser(users.get(i).getId(),
                         LocalDate.now() + "\n" + codeExercise.getTitle() + "\n" + codeExercise.getContent());
             }
+            codeExercise.setStatus(false);
+            codeExerciseService.save(codeExercise);
         } else {
             for (int i = 0; i < users.size(); i++) {
                 sendTextMessageUser(users.get(i).getId(),"Currently running out of homework, waiting for the admin to update the new lesson.");
