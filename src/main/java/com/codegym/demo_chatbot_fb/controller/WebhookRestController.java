@@ -60,7 +60,6 @@ public class WebhookRestController {
 
     @PostMapping("/webhook")
     public ResponseEntity<Void> handleCallback(@RequestBody final String payload, @RequestHeader(SIGNATURE_HEADER_NAME) final String signature) throws MessengerVerificationException {
-        logger.info("Received Messenger Platform callback - payload: {} | signature: {}", payload, signature);
         this.messenger.onReceiveEvents(payload, of(signature), event -> {
             if (event.isTextMessageEvent()) {
                 try {
@@ -79,36 +78,27 @@ public class WebhookRestController {
                 sendTextMessageUser(senderId, messageNotText);
             }
         });
-        logger.info("Processed callback payload successfully");
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private void handleTextMessageEvent(TextMessageEvent event) throws MessengerApiException, MessengerIOException {
-        logger.info("Received TextMessageEvent: {}", event);
-
         final String messageId = event.messageId();
         final String messageText = event.text();
         final String senderId = event.senderId();
         final Instant timestamp = event.timestamp();
-        logger.info("Received message'{}' with text '{}' from user '{}' at '{}'", messageId, messageText, senderId, timestamp);
-        logger.info("user");
         if (userService.findById(senderId).isPresent()){
             Optional<User> user = userService.findById(senderId);
             if (messageText.toLowerCase().equals("stop")) {
                 sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
                 user.get().setStatus(false);
-                logger.info("abc");
             } else {
                 user.get().setStatus(true);
                 sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
-                logger.info("abcd");
             }
             userService.save(user.get());
         } else {
-            logger.info("save user");
             User user = new User(senderId,true);
             userService.save(user);
-            logger.info("saved");
             sendTextMessageUser(senderId, "Welcome! You have started receiving scheduled messages");
         }
     }
@@ -123,7 +113,6 @@ public class WebhookRestController {
             final MessagePayload messagePayload = MessagePayload.create(recipient, MessagingType.RESPONSE, textMessage,
                     of(notificationType), empty());
             this.messenger.send(messagePayload);
-            logger.info("done");
         } catch (MessengerApiException | MessengerIOException e) {
             handleSendException(e);
         }
@@ -131,7 +120,6 @@ public class WebhookRestController {
 
     @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
-        logger.info("qwert");
         ArrayList<User> users = (ArrayList<User>) userService.findAllByStatusIsTrue();
         CodeExercise codeExercise = codeExerciseService.findCodeExerciseTrueFirst();
         if (codeExercise != null) {
@@ -146,7 +134,6 @@ public class WebhookRestController {
                 sendTextMessageUser(users.get(i).getId(),"Currently running out of homework, waiting for the admin to update the new lesson.");
             }
         }
-        logger.info("qwerty");
     }
 
     private void handleSendException(Exception e) {
