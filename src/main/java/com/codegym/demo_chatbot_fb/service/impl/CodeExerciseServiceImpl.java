@@ -6,6 +6,7 @@ import com.codegym.demo_chatbot_fb.service.CodeExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -47,5 +48,12 @@ public class CodeExerciseServiceImpl implements CodeExerciseService {
     @Override
     public Iterable<CodeExercise> findAllByTitleContaining(String s) {
         return codeExerciseRepository.findAllByTitleContaining(s);
+    }
+
+    @Override
+    public CodeExercise findCodeExerciseTrueFirst() {
+        ArrayList<CodeExercise> codeExercises = (ArrayList<CodeExercise>) codeExerciseRepository.findAllByStatusIsTrue();
+        if (codeExercises.isEmpty()) return null;
+        else return codeExercises.get(0);
     }
 }

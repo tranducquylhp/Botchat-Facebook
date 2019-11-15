@@ -1,7 +1,10 @@
 package com.codegym.demo_chatbot_fb.controller;
 
 import static com.github.messenger4j.Messenger.SIGNATURE_HEADER_NAME;
+
+import com.codegym.demo_chatbot_fb.model.CodeExercise;
 import com.codegym.demo_chatbot_fb.model.User;
+import com.codegym.demo_chatbot_fb.service.CodeExerciseService;
 import com.codegym.demo_chatbot_fb.service.UserService;
 import com.github.messenger4j.Messenger;
 import com.github.messenger4j.exception.MessengerApiException;
@@ -23,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -34,11 +38,11 @@ public class WebhookRestController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CodeExerciseService codeExerciseService;
+
     @Value("${message-notText}")
     String messageNotText;
-
-    @Value("${message-schedule}")
-    String messageSchedule;
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookRestController.class);
 
@@ -129,8 +133,16 @@ public class WebhookRestController {
     private void sendTextMessage() {
         logger.info("qwert");
         ArrayList<User> users = (ArrayList<User>) userService.findAllByStatusIsTrue();
-        for (int i=0; i<users.size(); i++){
-            sendTextMessageUser(users.get(i).getId(), messageSchedule);
+        CodeExercise codeExercise = codeExerciseService.findCodeExerciseTrueFirst();
+        if (codeExercise != null) {
+            for (int i = 0; i < users.size(); i++) {
+                sendTextMessageUser(users.get(i).getId(),
+                        LocalDate.now() + "\n" + codeExercise.getTitle() + "\n" + codeExercise.getContent());
+            }
+        } else {
+            for (int i = 0; i < users.size(); i++) {
+                sendTextMessageUser(users.get(i).getId(),"Currently running out of homework, waiting for the admin to update the new lesson.");
+            }
         }
         logger.info("qwerty");
     }

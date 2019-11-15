@@ -5,4 +5,6 @@ import org.springframework.data.domain.Page;
 
 public interface CodeExerciseService extends GeneralService<CodeExercise, Long> {
     Iterable<CodeExercise> findAllByTitleContaining(String s);
+
+    CodeExercise findCodeExerciseTrueFirst();
 }
