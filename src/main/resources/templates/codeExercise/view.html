@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Exercise View</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<p>
+    <a href="/codeExercises">Code Exercise list</a>
+</p>
+<h1>Code Exercise view</h1>
+<form th:object="${codeExercise}">
+    <input th:type="hidden" name="id" th:field="*{id}">
+    <table class="table table-striped">
+        <tr>
+            <td>Title:</td>
+            <td th:text="*{title}"></td>
+        </tr>
+        <tr>
+            <td>Content</td>
+            <td th:text="*{content}"></td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td th:text="*{status}"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

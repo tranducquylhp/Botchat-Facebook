@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Code Exercise</title>
+</head>
+<body>
+<h1>Delete Code Exercise</h1>
+<h2>Are you sure?</h2>
+<p>
+    <a href="/codeExercises">Code Exercise list</a>
+</p>
+<form th:action="@{/codeExercise/delete/__${codeExercise.id}__}" th:object="${codeExercise}" method="post">
+    <input th:type="hidden" name="id" th:field="*{id}">
+    <table>
+        <tr>
+            <td>Id:</td>
+            <td th:text="*{id}"></td>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td th:text="*{title}"></td>
+        </tr>
+        <tr>
+            <td>Content</td>
+            <td th:text="*{content}"></td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td th:text="*{status}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="Delete codeExercise"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

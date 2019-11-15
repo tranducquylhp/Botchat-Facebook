@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Exercise list</title>
+    <style>
+        th, td {
+            text-align: center !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div style="text-align: center">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style="display: inline-block">
+        <li class="nav-item">
+            <a class="nav-link active" id="pills-code-tab" data-toggle="pill" href="#pills-code" role="tab"
+               aria-controls="pills-home" aria-selected="true">Code Exercise List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-code-true-tab" data-toggle="pill" href="#pills-True" role="tab"
+               aria-controls="pills-profile" aria-selected="false">Code Exercise True</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-code-false-tab" data-toggle="pill" href="#pills-False" role="tab"
+               aria-controls="pills-contact" aria-selected="false">Code Exercise False</a>
+        </li>
+    </ul>
+</div>
+<center>
+    <h1 style="color: red">
+        <th:block th:if="${message}">
+            <p th:text="${message}"></p>
+        </th:block>
+    </h1>
+    <h3><a href="/codeExercise/create"><button>Create new Code Exercise</button></a> </h3>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade" id="pills-code" role="tabpanel" aria-labelledby="pills-code-tab">
+            <h1>Code Exercise List</h1>
+            <form>
+                Search by title:
+                <input name="s" type="text"/>
+                <input type="submit" value="Search"/>
+            </form>
+            <table border="1" class="table table-striped">
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>View</th>
+                </tr>
+                <th:block th:each="code : ${codeExercises}">
+                    <tr>
+                        <td th:text="${code.id}"></td>
+                        <td th:text="${code.title}"></td>
+                        <td th:text="${code.status}"></td>
+                        <td><a th:href="@{/codeExercise/edit/__${code.id}__ }">Edit</a></td>
+                        <td><a th:href="@{/codeExercise/delete/__${code.id}__ }">Delete</a></td>
+                        <td><a th:href="@{/codeExercise/view/__${code.id}__ }">View</a></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="pills-True" role="tabpanel" aria-labelledby="pills-code-true-tab">
+            <h1>Code Exercise: Status is true</h1>
+            <table border="1" class="table table-striped">
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>View</th>
+                </tr>
+                <th:block th:each="code : ${codeExercisesTrue}">
+                    <tr>
+                        <td th:text="${code.id}"></td>
+                        <td th:text="${code.title}"></td>
+                        <td th:text="${code.status}"></td>
+                        <td><a th:href="@{/codeExercise/edit/__${code.id}__ }">Edit</a></td>
+                        <td><a th:href="@{/codeExercise/delete/__${code.id}__ }">Delete</a></td>
+                        <td><a th:href="@{/codeExercise/view/__${code.id}__ }">View</a></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="pills-False" role="tabpanel" aria-labelledby="pills-code-false-tab">
+            <h1>Code Exercise: Status is false</h1>
+            <table border="1" class="table table-striped">
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>View</th>
+                </tr>
+                <th:block th:each="code : ${codeExercisesFalse}">
+                    <tr>
+                        <td th:text="${code.id}"></td>
+                        <td th:text="${code.title}"></td>
+                        <td th:text="${code.status}"></td>
+                        <td><a th:href="@{/codeExercise/edit/__${code.id}__ }">Edit</a></td>
+                        <td><a th:href="@{/codeExercise/delete/__${code.id}__ }">Delete</a></td>
+                        <td><a th:href="@{/codeExercise/view/__${code.id}__ }">View</a></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+</center>
+</body>
+</html>
