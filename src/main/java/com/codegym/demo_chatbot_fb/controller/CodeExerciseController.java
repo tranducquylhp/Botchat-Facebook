@@ -2,10 +2,8 @@ package com.codegym.demo_chatbot_fb.controller;
 
 import com.codegym.demo_chatbot_fb.model.CodeExercise;
 import com.codegym.demo_chatbot_fb.service.CodeExerciseService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 

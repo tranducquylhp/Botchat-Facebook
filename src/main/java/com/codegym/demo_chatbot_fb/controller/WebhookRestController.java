@@ -41,6 +41,8 @@ public class WebhookRestController {
     @Autowired
     private CodeExerciseService codeExerciseService;
 
+    private static Boolean status = true;
+
     @Value("${message-notText}")
     String messageNotText;
 
@@ -75,7 +77,7 @@ public class WebhookRestController {
                 }
             } else {
                 String senderId = event.senderId();
-                sendTextMessageUser(senderId, messageNotText);
+                sendTextMessageUser(senderId, "Tôi là bot chỉ có thể xử lý tin nhắn văn bản.");
             }
         });
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -89,17 +91,21 @@ public class WebhookRestController {
         if (userService.findById(senderId).isPresent()){
             Optional<User> user = userService.findById(senderId);
             if (messageText.toLowerCase().equals("stop")) {
-                sendTextMessageUser(senderId, "Hello. You have ended receiving scheduled messages");
+                sendTextMessageUser(senderId, "Bạn đã dừng nhận bài tập định kỳ. Hãy chat bất kỳ một ký tự nào đó để được bắt đầu nhận bài tập nhé!");
                 user.get().setStatus(false);
             } else {
-                user.get().setStatus(true);
-                sendTextMessageUser(senderId, "Hello. You have started receiving scheduled messages");
+                if (!user.get().isStatus()) {
+                    user.get().setStatus(true);
+                    sendTextMessageUser(senderId, "Xin chào. Bạn đã đăng ký nhận bài tập định kỳ thành công.");
+                } else {
+                    sendTextMessageUser(senderId, "Xin chào. Bạn đã đăng ký nhận bài tập định kỳ trước đó. \n Hãy đợi đến lúc chúng tôi gửi bài tập cho bạn.");
+                }
             }
             userService.save(user.get());
         } else {
             User user = new User(senderId,true);
             userService.save(user);
-            sendTextMessageUser(senderId, "Welcome! You have started receiving scheduled messages");
+            sendTextMessageUser(senderId, "Chào mừng bạn đã đến với bot gửi bài tập định kỳ. \n Từ giờ bạn sẽ được nhận bài tập theo thời gian định kỳ. \n Chúc bạn học tập vui vẻ.");
         }
     }
 
@@ -118,20 +124,22 @@ public class WebhookRestController {
         }
     }
 
-    @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Saigon")
+    @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Saigon")
     private void sendTextMessage() {
-        ArrayList<User> users = (ArrayList<User>) userService.findAllByStatusIsTrue();
         CodeExercise codeExercise = codeExerciseService.findCodeExerciseTrueFirst();
+        ArrayList<User> users = (ArrayList<User>) userService.findAllByStatusIsTrue();
         if (codeExercise != null) {
+            status = true;
             for (int i = 0; i < users.size(); i++) {
                 sendTextMessageUser(users.get(i).getId(),
                         LocalDate.now() + "\n" + codeExercise.getTitle() + "\n" + codeExercise.getContent());
             }
             codeExercise.setStatus(false);
             codeExerciseService.save(codeExercise);
-        } else {
+        } else if (status){
             for (int i = 0; i < users.size(); i++) {
-                sendTextMessageUser(users.get(i).getId(),"Currently running out of homework, waiting for the admin to update the new lesson.");
+                sendTextMessageUser(users.get(i).getId(),"Hiện tại đã hết bài tập để rèn luyện. Hãy đợi admin cập nhật bài tập mới!");
+                status = false;
             }
         }
     }
